@@ -28,17 +28,18 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
 
         // GET: api/Hotels
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hotel>>> GetHotel()
+        public async Task<IEnumerable<Hotel>> GetHotel()
         {
-          
-            return await _hotel.GetHotel();
+            var hotel = await _hotel.GetHotel();
+            return hotel;
         }
 
         // GET: api/Hotels/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Hotel>> GetHotel(int id)
         {
-            return await _hotel.GetHotel(id);
+            var hotel = await _hotel.GetHotel(id);
+            return hotel;
         }
 
         // PUT: api/Hotels/5

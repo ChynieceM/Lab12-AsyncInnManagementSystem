@@ -23,14 +23,16 @@ namespace Lab12_AsyncInnManagementSystem.Models.Services
             return null;
         }
 
-        public async Task<ActionResult<IEnumerable<Hotel>>> GetHotel()
+        public async Task<IEnumerable<Hotel>> GetHotel()
         {
-            return await _context.Hotels.ToListAsync();
+            var hotels = _context.Hotels.ToList();
+            return hotels;
         }
 
-        public async Task<ActionResult<Hotel>> GetHotel(int id)
+        public async Task<Hotel> GetHotel(int id)
         {
-            return await _context.Hotel.FindAsync(id);
+            var hotel = await _context.Hotel.FindAsync(id); ;
+            return hotel;
         }
 
         public bool HotelExists(int id)

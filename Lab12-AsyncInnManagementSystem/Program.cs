@@ -14,10 +14,13 @@ namespace Lab12_AsyncInnManagementSystem
 
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<AsyncInnContext>(options => 
-            options.UseSqlServer(
-                builder.Configuration
-                .GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<AsyncInnContext>(options =>
+            {
+                var connectionString = builder.Configuration
+                    .GetConnectionString("DefaultConnection");
+                options.UseSqlServer(
+                   connectionString);
+                });
 
             builder.Services.AddTransient<IHotel, HotelService>();
             var app = builder.Build();
