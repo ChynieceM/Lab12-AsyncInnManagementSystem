@@ -19,5 +19,9 @@ namespace Lab12_AsyncInnManagementSystem.Models
         public string Address { get; set; }
         [Required]
         public  string Phone { get; set; }
+
+        
+        //navigation properties 
+        public List<HotelRoom> HotelRooms { get; set; }
     }
 }

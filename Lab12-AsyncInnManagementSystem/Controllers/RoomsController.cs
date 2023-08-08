@@ -29,7 +29,8 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
           {
               return NotFound();
           }
-            return await _context.Room.ToListAsync();
+            return await _context.Room.Include(room => room.HotelRooms).ThenInclude(hotelroom => hotelroom.Hotel).Include(room => room.RoomAmenities).ThenInclude(roomAmenity => roomAmenity.Amenity).
+                ToListAsync();
         }
 
         // GET: api/Rooms/5
@@ -96,6 +97,42 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
             return CreatedAtAction("GetRoom", new { id = room.ID }, room);
         }
 
+        [HttpPost]
+        [Route("{roomId}/Amenity/{amenityId}")]
+        public async Task<IActionResult>PostAmenityToRoom(int amenityID, int roomID)
+        {
+            if (_context.RoomAmenity == null)
+            {
+                return Problem("Enity set 'AsyncInnContext.Amenity' is null");
+            }
+            var amenity = _context.Amenity.FindAsync(amenityID);
+            if(amenity == null)
+            {
+                return Problem("No amenity with that ID exists");
+            }
+            var room = _context.Room.FindAsync(roomID);
+           
+            if(room == null)
+            {
+                return Problem("No room with that ID exists");
+            }
+
+
+            RoomAmenity newRA = new RoomAmenity();
+            try
+            {
+               newRA = _context.RoomAmenities.Add(new RoomAmenity { AmenityID = amenityID, RoomID = roomID }).Entity;
+            }
+            catch(Exception e)
+            {
+
+            }
+            finally
+            {
+               await  _context.SaveChangesAsync();
+            }
+                return CreatedAtAction("PostAmenityToRoom", newRA.ID, newRA);
+        }
         // DELETE: api/Rooms/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)

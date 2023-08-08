@@ -17,5 +17,10 @@ namespace Lab12_AsyncInnManagementSystem.Models
         [Required]
         public double Price { get; set; }
 
+        //navigation properties
+        public Hotel Hotel { get; set; }
+
+        public Room Room { get; set; }
+
     }
 }
