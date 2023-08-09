@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lab12_AsyncInnManagementSystem.Data;
 using Lab12_AsyncInnManagementSystem.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Lab12_AsyncInnManagementSystem.Controllers
 {
@@ -29,8 +30,7 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
           {
               return NotFound();
           }
-            return await _context.Room.Include(room => room.HotelRooms).ThenInclude(hotelroom => hotelroom.Hotel).Include(room => room.RoomAmenities).ThenInclude(roomAmenity => roomAmenity.Amenity).
-                ToListAsync();
+            return await _context.Room.Include(room => room.RoomAmenities).ToListAsync();
         }
 
         // GET: api/Rooms/5
@@ -98,19 +98,19 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
         }
 
         [HttpPost]
-        [Route("{roomId}/Amenity/{amenityId}")]
-        public async Task<IActionResult>PostAmenityToRoom(int amenityID, int roomID)
+        [Route("{roomID}/Amenity/{amenityID}")]
+        public async Task<IActionResult>PostAmenityToRoom(int roomID, int amenityID)
         {
             if (_context.RoomAmenity == null)
             {
                 return Problem("Enity set 'AsyncInnContext.Amenity' is null");
             }
-            var amenity = _context.Amenity.FindAsync(amenityID);
+            var amenity = await _context.Amenity.FindAsync(amenityID);
             if(amenity == null)
             {
                 return Problem("No amenity with that ID exists");
             }
-            var room = _context.Room.FindAsync(roomID);
+            var room = await _context.Room.FindAsync(roomID);
            
             if(room == null)
             {
@@ -151,6 +151,45 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpDelete]
+        [Route("{roomID}/Amenity/{amenityID}")]
+        public async Task<IActionResult> DeleteAmenityFromRoom( int roomID, int amenityID)
+        {
+            if (_context.RoomAmenity == null)
+            {
+                return Problem("Enity set 'AsyncInnContext.Amenity' is null");
+            }
+            var amenity = await _context.Amenity.FindAsync(amenityID);
+            if (amenity == null)
+            {
+                return Problem("No amenity with that ID exists");
+            }
+            var room = await _context.Room.FindAsync(roomID);
+
+            if (room == null)
+            {
+                return Problem("No room with that ID exists");
+            }
+
+
+         
+            try
+            {
+                RoomAmenity oldRA = await _context.RoomAmenities.FirstOrDefaultAsync(roomamenity => roomamenity.RoomID == roomID && roomamenity.AmenityID == amenityID);
+            _context.RoomAmenities.Remove(oldRA);
+            }
+            catch (Exception e)
+            {
+
+            }
+            finally
+            {
+                await _context.SaveChangesAsync();
+            }
+            //  return CreatedAtAction("DeleteAmenityTRoom", oldRA.ID, oldRA);
+            return Ok();
         }
 
         private bool RoomExists(int id)

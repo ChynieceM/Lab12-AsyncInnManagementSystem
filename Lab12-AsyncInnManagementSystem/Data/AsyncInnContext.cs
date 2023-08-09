@@ -4,11 +4,11 @@ namespace Lab12_AsyncInnManagementSystem.Data
 {
     public class AsyncInnContext: DbContext
     {
-        public DbSet<Amenity> Amenitites;
-        public DbSet<RoomAmenity> RoomAmenities;
-        public DbSet<Room> Rooms;
-        public DbSet<HotelRoom> HotelRooms;
-        public DbSet<Hotel> Hotels;
+        public DbSet<Amenity> Amenitites { get; set; }
+        public DbSet<RoomAmenity> RoomAmenities { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<HotelRoom> HotelRooms { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
 
         public AsyncInnContext(DbContextOptions options) : base(options) { }
 
