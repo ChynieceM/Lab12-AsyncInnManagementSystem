@@ -26,10 +26,10 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Hotel>>> GetHotel()
         {
-          if (_context.Hotel == null)
-          {
-              return NotFound();
-          }
+            if (_context.Hotel == null)
+            {
+                return NotFound();
+            }
             return await _context.Hotel.ToListAsync();
         }
 
@@ -37,10 +37,10 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Hotel>> GetHotel(int id)
         {
-          if (_context.Hotel == null)
-          {
-              return NotFound();
-          }
+            if (_context.Hotel == null)
+            {
+                return NotFound();
+            }
             var hotel = await _context.Hotel.FindAsync(id);
 
             if (hotel == null)
@@ -56,7 +56,7 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHotel(int id, Hotel hotel)
         {
-            if (id != hotel.ID)
+            if (id != hotel.Id)
             {
                 return BadRequest();
             }
@@ -87,14 +87,14 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
         {
-          if (_context.Hotel == null)
-          {
-              return Problem("Entity set 'AsyncInnContext.Hotel'  is null.");
-          }
+            if (_context.Hotel == null)
+            {
+                return Problem("Entity set 'AsyncInnContext.Hotel'  is null.");
+            }
             _context.Hotel.Add(hotel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetHotel", new { id = hotel.ID }, hotel);
+            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotel);
         }
 
         // DELETE: api/Hotels/5
@@ -119,7 +119,8 @@ namespace Lab12_AsyncInnManagementSystem.Controllers
 
         private bool HotelExists(int id)
         {
-            return (_context.Hotel?.Any(e => e.ID == id)).GetValueOrDefault();
+            return (_context.Hotel?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
+
