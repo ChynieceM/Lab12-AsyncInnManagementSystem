@@ -1,5 +1,6 @@
 using Lab12_AsyncInnManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
 namespace Lab12_AsyncInnManagementSystem
@@ -25,10 +26,33 @@ namespace Lab12_AsyncInnManagementSystem
                 });
             });
 
-            builder.Services.AddDbContext<AsyncInnContext>(options => 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+              .AddJwtBearer(options =>
+      {
+          // Tell the authenticaion scheme "how/where" to validate the token + secret
+          options.TokenValidationParameters = Models.JwtTokenService.GetValidationParameters(builder.Configuration);
+      });
+            
+builder.Services.AddAuthorization(options =>
+{
+    // Add "Name of Policy", and the Lambda returns a definition
+    options.AddPolicy("create", policy => policy.RequireClaim("permissions", "create"));
+    options.AddPolicy("update", policy => policy.RequireClaim("permissions", "update"));
+    options.AddPolicy("delete", policy => policy.RequireClaim("permissions", "delete"));
+});
+            
+
+//Add to ApplicationUser or a custom DTO class
+
+        builder.Services.AddDbContext<AsyncInnContext>(options => 
             options.UseSqlServer(
                 builder.Configuration
-                .GetConnectionString("DefaultConnection")));
+                .GetConnectionString("LocalConnection")));
             var app = builder.Build();
 
             //swagger documentName = version parameter from builder
