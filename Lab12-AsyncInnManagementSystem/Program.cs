@@ -52,7 +52,7 @@ builder.Services.AddAuthorization(options =>
         builder.Services.AddDbContext<AsyncInnContext>(options => 
             options.UseSqlServer(
                 builder.Configuration
-                .GetConnectionString("LocalConnection")));
+                .GetConnectionString("DefaultConnection")));
             var app = builder.Build();
 
             //swagger documentName = version parameter from builder
